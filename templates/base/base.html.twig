@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html class="ie7" lang="pl-PL" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie8" lang="pl-PL" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if !(IE 6) | !(IE 7) | !(IE 8)  ]>
+<html lang="pl-PL" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<head>
+	<head>
+		{% block head_metas %}
+			<meta charset='utf-8'>
+			<meta http-equiv="content-language" content="pl">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=yes">
+		{% endblock %}
+		<title>{% block head_title %} {% endblock %}</title>
+		{% block head_links %}
+			<link href="common/images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+			<link rel="stylesheet" href="css/style.css">
+		{% endblock %}
+	</head>
+	<body>
+		<section class="b-mainWrapper {% block mainWrapperClass %}{% endblock %}">
+			<div class="m-interfaceRuler" id="js-ruler"></div>
+		{% block content %}{% endblock %}
+		</section>
+		<script type="text/javascript" src="js/libs/interact-1.2.4.min.js"></script> 
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="js/libs/jquery.copycss.js"></script>
+		<script>
+
+		interact('#js-scene')
+		  .resizable({
+		    edges: { right: '#js-handler'}
+		  })
+		  .on('resizemove', function (event) {
+		  	var ruler = document.getElementById('js-size');
+		    var target = event.target,
+		        x = (parseFloat(target.getAttribute('data-x')) || 0),
+		        y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+		    // update the element's style
+		    target.style.width  = event.rect.width + 'px';
+		    target.style.height = event.rect.height + 'px';
+		    ruler.textContent = event.rect.width + '×' + event.rect.height;
+		  });
+
+		var elementArray = [];
+		var styles = [];
+		var excludedStyles = [
+			'align-content', 
+			'align-items',
+			'align-self',
+			'animation-delay',
+			'animation-direction',
+			'animation-duration',
+			'animation-fill-mode',
+			'animation-iteration-count',
+			'animation-name',
+			'animation-play-state',
+			'animation-timing-function',
+			'backface-visibility',
+			'background-attachment',
+			'background-blend-mode',
+			'background-clip',
+			'background-origin',
+			'box-decoration-break',
+			'caption-side',
+			'clip',
+			'clip-path',
+			'clip-rule',
+			'color-interpolation',
+			'color-interpolation-filters',
+			'counter-increment',
+			'counter-reset',
+			'direction',
+			'dominant-baseline',
+			'empty-cells',
+			'fill',
+			'fill-opacity',
+			'fill-rule',
+			'filter',
+			'flex-basis',
+			'flex-direction',
+			'flex-grow',
+			'flex-shrink',
+			'flex-wrap',
+			'flood-color',
+			'flood-opacity',
+			'font-feature-settings',
+			'font-kerning',
+			'font-language-override',
+			'font-size-adjust',
+			'font-stretch',
+			'font-synthesis',
+			'font-variant',
+			'font-variant-alternates',
+			'font-variant-caps',
+			'font-variant-east-asian',
+			'font-variant-ligatures',
+			'font-variant-numeric',
+			'font-variant-position',
+			'image-orientation',
+			'image-rendering',
+			'ime-mode',
+			'isolation',
+			'justify-content',
+			'lighting-color',
+			'marker-end',
+			'marker-mid',
+			'marker-offset',
+			'marker-start',
+			'mask',
+			'mask-type',
+			'mix-blend-mode',
+			'object-fit',
+			'object-position',
+			'order',
+			'outline-color',
+			'outline-offset',
+			'outline-style',
+			'outline-width',
+			'page-break-after',
+			'page-break-before',
+			'page-break-inside',
+			'paint-order',
+			'perspective',
+			'perspective-origin',
+			'pointer-events',
+			'quotes',
+			'ruby-align',
+			'ruby-position',
+			'scroll-behavior',
+			'shape-rendering',
+			'stop-color',
+			'stop-opacity',
+			'stroke',
+			'stroke-dasharray',
+			'stroke-dashoffset',
+			'stroke-linecap',
+			'stroke-linejoin',
+			'stroke-miterlimit',
+			'stroke-opacity',
+			'stroke-width',
+			'table-layout',
+			'text-anchor',
+			'text-decoration-color',
+			'text-decoration-line',
+			'text-decoration-style',
+			'text-rendering',
+			'transition-timing-function',
+			'unicode-bidi',
+			'vector-effect',
+			'will-change',
+			'-moz-tab-size',
+			'-moz-window-shadow',
+			'-moz-stack-sizing',
+			'-moz-text-align-last',
+			'-moz-text-size-adjust',
+			'-moz-user-focus',
+			'-moz-user-input',
+			'-moz-user-modify',
+			'-moz-user-select',
+			'-moz-window-dragging',
+			'-moz-window-shadow',
+			'-moz-appearance',
+			'-moz-binding',
+			'-moz-border-bottom-colors',
+			'-moz-border-left-colors',
+			'-moz-border-right-colors',
+			'-moz-border-top-colors',
+			'-moz-box-align',
+			'-moz-box-direction',
+			'-moz-box-flex',
+			'-moz-box-ordinal-group',
+			'-moz-box-orient',
+			'-moz-box-pack',
+			'-moz-column-count',
+			'-moz-column-fill',
+			'-moz-column-gap',
+			'-moz-column-rule-color',
+			'-moz-column-rule-style',
+			'-moz-column-rule-width',
+			'-moz-column-width',
+			'-moz-float-edge',
+			'-moz-force-broken-image-icon',
+			'-moz-hyphens',
+			'-moz-image-region',
+			'-moz-orient',
+			'-moz-outline-radius-bottomleft',
+			'-moz-outline-radius-bottomright',
+			'-moz-outline-radius-topleft',
+			'-moz-outline-radius-topright'
+		]
+
+		$('#js-saveScene').on('click', function(){
+			var media = $('#js-scene').width();
+			var styles = [];
+
+			$('#js-sceneContent *').each(function(){
+				var elementStyles = $(this).getStyles(null,excludedStyles)
+				styles.push(elementStyles)
+				elementArray.push([media, {"elements": [$(this).attr('class'), styles]}]);
+			})
+
+			console.log(elementArray)
+		})
+
+
+
+		</script>
+	</body>
+</html>

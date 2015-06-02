@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+	<meta charset='utf-8'>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+	<title></title>
+	<link href="common/images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+</head>
+<body>
+	<div id="scene" style="width: 500px;height: 500px;background:#eee;position: relative">
+		<div id="emblemat" style="position: absolute; top: 0px; left: 30px; width: 100px; height: 200px;background: green; opacity: 0.7">emblemat</div>
+	</div>
+</body>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="jquery-ui.min.js"></script>
+<script src="jquery.copycss.js"></script>
+<script>
+
+	
+	function doObjectsCollide(a, b, collideStatus, name) { 
+		var status = 0;
+		var x = $(a).offset();
+		var y = $(b).offset();
+		var aTop = x.top;
+		var aLeft = x.left;
+		var bTop = y.top;
+		var bLeft = y.left;
+
+		if (!(
+			((aTop + $(a).height()) < (bTop)) ||
+			(aTop > (bTop + $(b).height())) ||
+			((aLeft + $(a).width()) < bLeft) ||
+			(aLeft > (bLeft + $(b).width()))
+			)) {
+			console.log('collide with ' + b + ' ' + name);
+		$('#emblemat').css('background','red');
+		status++;
+		collideStatus.push(status);
+	} else {
+		console.log('not collide with ' + b + ' ' + name);
+		collideStatus.push(status);
+		if (collideStatus.indexOf(1) < 0) {
+			$('#emblemat').css('background','green');
+		}
+	}
+}
+
+function addBoxesToScene(boxes) {
+	$.each( boxes, function( key, value ) {
+		var x = value;
+		var element = "<div style='width:"+ x.width + "; height:"+ x.height + "; top:"+ x.top + "; left:"+ x.left + "; position: absolute; border: 1px dashed #888; opacity: 0.7' id='emb"+key+"' />"
+		$('#scene').append(element);
+	});
+}
+
+function checkCollision(boxes) {
+	var collideStatus = [];
+	$.each( boxes, function( key, value ) {
+		var x = value;
+		var a = "#emblemat";
+		var b = "#emb" + key;
+		var name = x.name;
+		doObjectsCollide("#emblemat", b, collideStatus, name);
+	});
+}
+
+$(document).ready(function(){ 
+
+	var boxes = {
+		"1": {
+			"width": "100px",
+			"height": "100px",
+			"top": "140px",
+			"left": "60px",
+			"name": "Janusz"
+		},
+		"2": {
+			"width": "20px",
+			"height": "150px",
+			"top": "340px",
+			"left": "160px",
+			"name": "Marian"
+		},
+		"3": {
+			"width": "60px",
+			"height": "130px",
+			"top": "20px",
+			"left": "280px",
+			"name": "Zbigniew"
+		},
+		"4": {
+			"width": "60px",
+			"height": "10px",
+			"top": "220px",
+			"left": "130px",
+			"name": "Mariusz"
+		}
+	};
+
+	addBoxesToScene(boxes)
+	checkCollision(boxes);
+	var elementArray = [];
+	var breakpoints = [];
+	var styles = []
+
+	$( "#emblemat" ).draggable({
+		stop: function( event, ui ) {
+			var media = document.documentElement.clientWidth;
+			var status = 0;
+			checkCollision(boxes);
+			var x = breakpoints.indexOf(media);
+			if (x < 0) {
+				breakpoints.push(media)
+				status = 1
+			} else {
+				breakpoints[x] = media;
+			}
+
+			var y = styles.indexOf($( "#emblemat" ).getStyles())
+			if (y < 0) {
+				styles.push($( "#emblemat" ).getStyles())
+			} else {
+				styles[x] = $( "#emblemat" ).getStyles();
+			}
+
+			elementArray.push(["#emblemat", breakpoints, styles]);
+			console.log(elementArray)
+		}
+	});
+
+});
+
+
+</script>
+</html>
