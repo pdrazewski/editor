@@ -29,6 +29,7 @@
 		<script type="text/javascript" src="js/libs/interact-1.2.4.min.js"></script> 
 		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 		<script src="js/libs/jquery.copycss.js"></script>
+		<script src="js/libs/underscore-min.js"></script>
 		<script>
 
 		interact('#js-scene')
@@ -194,17 +195,25 @@
 			'-moz-outline-radius-topleft',
 			'-moz-outline-radius-topright'
 		]
-
+		var elementArray = [];
 		$('#js-saveScene').on('click', function(){
 			var media = $('#js-scene').width();
 			var styles = [];
+			
+			var countElements = $('#js-sceneContent *').length;
 
 			$('#js-sceneContent *').each(function(){
 				var elementStyles = $(this).getStyles(null,excludedStyles)
-				styles.push(elementStyles)
-				elementArray.push([media, {"elements": [$(this).attr('class'), styles]}]);
+				styles.push([$(this).attr('class'), elementStyles]);
+				
 			})
-
+			var res = _(elementArray).flatten();
+			var position = res.indexOf(media);
+			    if (position < 0) {
+			    	elementArray.push([media, styles])
+			    } else {
+			    	elementArray[position] = [media, styles]
+			    }
 			console.log(elementArray)
 		})
 
