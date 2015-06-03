@@ -23,6 +23,7 @@
 	</head>
 	<body>
 		<section class="b-mainWrapper {% block mainWrapperClass %}{% endblock %}">
+			<div class="m-interfaceBreaks" id="js-breakpoints" style="position: relative"></div>
 			<div class="m-interfaceRuler" id="js-ruler"></div>
 		{% block content %}{% endblock %}
 		</section>
@@ -196,7 +197,10 @@
 			'-moz-outline-radius-topright'
 		]
 		var elementArray = [];
+		var breakpointsArray = [];
+		var breaks = [];
 		$('#js-saveScene').on('click', function(){
+			$('#js-breakpoints').html("");
 			var media = $('#js-scene').width();
 			var styles = [];
 			
@@ -212,13 +216,25 @@
 			var position = res.indexOf(media);
 			    if (position < 0) {
 			    	elementArray.push([media, styles])
+			    	breakpointsArray.push(media)
 			    } else {
 			    	elementArray[position] = [media, styles]
+			    	breakpointsArray[position] = media;
 			    }
 			    console.clear()
 			    console.log(countElements)
-			console.log(elementArray)
+				console.log(elementArray)
+				breaks = breakpointsArray.sort(function(a, b){return a-b});
+				console.log(breaks)
+
+
+				$.each(breaks, function( index, value ) {
+					$('#js-breakpoints').append('<div style="position:relative;height: 7px;"><div style="width:'+value+'px; height: 5px; background: red; left: 0; position: absolute;opacity:0.5" /></div>');
+				});
+
 		})
+		
+		
 
 
 
